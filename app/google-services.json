@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "808579258218",
+    "firebase_url": "https://digigit.firebaseio.com",
+    "project_id": "digigit",
+    "storage_bucket": "digigit.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:808579258218:android:f015580ca6d6b3f5e6b713",
+        "android_client_info": {
+          "package_name": "com.example.digigit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "808579258218-3m5s17cv3d3v9ql5ie98hkrgo2arj40t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.digigit",
+            "certificate_hash": "39062f09ffc220f271273f375880e3bf357382a4"
+          }
+        },
+        {
+          "client_id": "808579258218-mq4ulsvo0inqmdi9qiarj5hrlh3c9cui.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaOh2Lhq8ZDa0R2PK-QuUcURKyaKPHhKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "808579258218-mq4ulsvo0inqmdi9qiarj5hrlh3c9cui.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
