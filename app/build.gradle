@@ -44,6 +44,8 @@ dependencies {
         //exclude module: 'support-media-compat'
         exclude module: 'support-v4'
     }
+    implementation 'com.squareup.retrofit2:retrofit:2.0.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.0.0'
     implementation 'pub.devrel:easypermissions:1.2.0'
     implementation 'com.google.firebase:firebase-storage:16.1.0'
     implementation 'com.google.firebase:firebase-auth:16.2.0'

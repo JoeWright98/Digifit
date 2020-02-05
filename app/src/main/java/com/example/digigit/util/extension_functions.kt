@@ -20,7 +20,7 @@ fun ZXingScannerView.startCameraForAllDevices(context: Context){
      * (rear-facing) of the device. The front camera
      * (front-facing) is ID 1.
      * */
-    this.startCamera() /* Da API ZXingScannerView */
+    this.startCamera() /* API ZXingScannerView */
 
     /*
      * To know about allocated resources - via

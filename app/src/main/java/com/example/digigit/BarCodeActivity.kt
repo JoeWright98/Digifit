@@ -179,7 +179,7 @@ EasyPermissions.PermissionCallbacks {
         val result = Result(
             text,
             text.toByteArray(), /* Just to have something */
-            arrayOf(), /* Just to have somethign*/
+            arrayOf(), /* Just to have something*/
             BarcodeFormat.valueOf(barcodeFormatName))
 
         /* Saving the last read result.*/

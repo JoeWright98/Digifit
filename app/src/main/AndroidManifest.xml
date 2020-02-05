@@ -27,12 +27,13 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".ui.gallery.GalleryFragment"
+            android:name=".ui.gallery.DiaryFragment"
             android:screenOrientation="portrait">
         </activity>
 
 
     </application>
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>
