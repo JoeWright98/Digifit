@@ -19,18 +19,18 @@
 
     <fragment
         android:id="@+id/nav_progress"
-        android:name="com.example.digigit.ui.slideshow.SlideshowFragment"
+        android:name="com.example.digigit.ui.send.SendFragment"
         android:label="@string/menu_progress"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_send" />
 
     <fragment
         android:id="@+id/nav_achievements"
-        android:name="com.example.digigit.ui.slideshow.SlideshowFragment"
+        android:name="com.example.digigit.ui.share.ShareFragment"
         android:label="@string/menu_achievements"
         tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/nav_profile"
-        android:name="com.example.digigit.ui.slideshow.SlideshowFragment"
+        android:name="com.example.digigit.ui.slideshow.ProfileFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_slideshow" />
     
