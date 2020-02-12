@@ -8,7 +8,14 @@ import android.os.Bundle
 import android.util.Patterns
 import android.view.View
 import android.webkit.URLUtil
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.Request
+import com.android.volley.Response
+
+import com.android.volley.toolbox.Volley
 import com.example.digigit.util.*
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
@@ -17,20 +24,44 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
 import pub.devrel.easypermissions.EasyPermissions
 import pub.devrel.easypermissions.PermissionRequest
 
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
+import com.google.android.gms.common.api.Api
+import com.google.gson.GsonBuilder
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
+import java.text.FieldPosition
+import java.text.ParsePosition
+
 
 class BarCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler,
 EasyPermissions.PermissionCallbacks {
     val REQUEST_CODE_CAMERA = 182 /* Random integer */
     val REQUEST_CODE_FULLSCREEN = 184 /* Random integer */
 
+    private var textView: TextView? = null
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_barcode)
 
+
+
         askCameraPermission()
         lastResultVerification()
+
+
+
     }
+
 
     /*
      * If we have any read results
@@ -79,6 +110,7 @@ EasyPermissions.PermissionCallbacks {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+
         if( requestCode == REQUEST_CODE_FULLSCREEN ){
             /*
              * Ensures that the flash light button and the
@@ -92,6 +124,9 @@ EasyPermissions.PermissionCallbacks {
                 processBarcodeResult(
                     data.getStringExtra(Database.KEY_NAME),
                     data.getStringExtra(Database.KEY_BARCODE_NAME) )
+                parseJson(data.getStringExtra(Database.KEY_NAME),
+                    data.getStringExtra(Database.KEY_BARCODE_NAME))
+
             }
         }
     }
@@ -145,26 +180,69 @@ EasyPermissions.PermissionCallbacks {
 
 
     /* *** Barcode Interpretation Algorithms *** */
-    override fun handleResult(result: Result?) {
+    override fun handleResult(result: Result) {
         /*
          * Default protection clause - If the result is
          * null, clears the screen. If there is a last data read,
          * present a message and finish the process
          * of the handleResult () method.
          * */
-        if( result == null ){
+        if (result == null) {
             unrecognizedCode(this, { clearContent() })
             return
         }
 
         processBarcodeResult(
             result.text,
-            result.barcodeFormat.name)
+            result.barcodeFormat.name
+
+        )
     }
+
+    fun parseJson( text: String,
+                   barcodeFormatName: String){
+        //retrieving json stuff
+        val result = Result(
+            text,
+            text.toByteArray(), /* Just to have something */
+            arrayOf(), /* Just to have something*/
+            BarcodeFormat.valueOf(barcodeFormatName))
+
+        val barcode = result.text
+
+        val url = "https://world.openfoodfacts.org/api/v0/product/$barcode.json"
+        val request = okhttp3.Request.Builder().url(url).build()
+
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object: Callback{
+            override fun onResponse(call: Call, response: okhttp3.Response) {
+                val body = response?.body?.string()
+                println(body)
+
+                val gson = GsonBuilder().create()
+
+                val productList = gson.fromJson(body, ProductList::class.java)
+
+
+            }
+            override fun onFailure(call: Call, e: IOException) {
+                println("Failed")
+            }
+
+        })
+
+
+    }
+    class ProductList(val products: List<Product>)
+    class ProductCode(val code: String)
+    class Product(val productCode: ProductCode, val product_name: String)
+
 
     private fun processBarcodeResult(
         text: String,
         barcodeFormatName: String ){
+
+
 
         /*
          * The following code is essential for the ringtone
@@ -182,13 +260,23 @@ EasyPermissions.PermissionCallbacks {
             arrayOf(), /* Just to have something*/
             BarcodeFormat.valueOf(barcodeFormatName))
 
+
+
+       // parseJson(result)
+
         /* Saving the last read result.*/
         Database.saveResult(this, result)
+
 
         /* Modifying UI. */
         tv_content.text = result.text
         processBarcodeType(true, result.barcodeFormat.name)
-        processButtonOpen(result)
+        //processButtonOpen(result)
+
+
+
+
+
 
         z_xing_scanner.resumeCameraPreview(this)
     }
@@ -254,46 +342,6 @@ EasyPermissions.PermissionCallbacks {
         Database.saveResult(this)
     }
 
-    /*
-     * Opens activity that allows camera use
-     * On all device.
-     *
-    fun openFullscreen(view: View){
-        /*
-         * Default protection Clause - No Permission
-         * Camera: Does not open activity.
-         * */
-        if( !EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA) ){
-            return
-        }
-
-        unlockCamera()
-
-        /*
-         * The following line of code makes sure that
-         * there is no risk of an exception if
-         * the user opens the app and already
-         * Fullscreen screen mode is already enabled.
-         * */
-        val value = if(ib_flashlight.tag == null) false else (ib_flashlight.tag as Boolean)
-
-        val i = Intent(this, FullBarCodeActivity::class.java)
-        i.putExtra(Database.KEY_IS_LIGHTENED, value)
-        startActivityForResult(i, REQUEST_CODE_FULLSCREEN)
-    }
-    */
-
-    /*
-     * Since the lock is not maintained, the method below is
-     * required for user to see unlock
-     * occurring if the camera is locked.
-     *
-    private fun unlockCamera(){
-        ib_lock.tag = true
-        lockUnlock()
-    }
-
-     */
 
     /*
      * Turns on or off the flash light on your phone if it is
@@ -320,62 +368,10 @@ EasyPermissions.PermissionCallbacks {
         }
     }
 
-    /*
-     * Function responsible for changing operating status of the
-     * bar code interpretation algorithm
-     * read, including change of presentation icon,
-     * to the user of the status of the algorithm for interpreting
-     * code. Note that the light and flash button should not work
-     * if CameraPreview is stopped, stopped.
-     *
-    fun lockUnlock(view: View? = null){
-        /*
-         *Using the Button Tag Property to Save the
-         * current value of code reading lock, so no
-         * we need to work with a new variable
-         * instance only to keep this value.
-         * */
-        val value = if(ib_lock.tag == null)
-            true
-        else
-            !(ib_lock.tag as Boolean)
-        ib_lock.tag = value /* Always the inverse of the input value. */
 
-        if( value ){
-            /*
-             * To function must be invoked before the
-             * stopCameraPreview ().
-             * */
-            turnOffFlashlight()
-
-            /*
-             * Stop barcode scanning with
-             * the camera
-             * */
-            z_xing_scanner.stopCameraPreview()
-            ib_lock.setImageResource(R.drawable.ic_lock_white_24dp)
-            ib_flashlight.isEnabled = false
-        }
-        else{
-            /*
-             * Resume barcode scanning with
-             * the camera.
-             * */
-            z_xing_scanner.resumeCameraPreview(this)
-            ib_lock.setImageResource(R.drawable.ic_lock_open_white_24dp)
-            ib_flashlight.isEnabled = true
-        }
-    }
-    */
-
-    /*
-     * Necessary method as it makes no sense to let the light
-     * flash on when screen is no longer reading
-     * codes, is locked. Method only invoked when
-     * screen lock occurs.
-     * */
     private fun turnOffFlashlight(){
         ib_flashlight.tag = true
         flashLight()
     }
+
 }

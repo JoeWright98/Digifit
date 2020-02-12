@@ -101,19 +101,24 @@
             android:paddingTop="4dp">
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_width="378dp"
+                android:layout_height="169dp"
                 android:layout_weight="1">
 
                 <TextView
                     android:id="@+id/tv_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/ib_clear"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginRight="32dp"
                     android:layout_toStartOf="@+id/ib_clear"
+                    android:layout_toLeftOf="@+id/ib_clear"
                     android:background="@drawable/text_view_content_border"
                     android:gravity="center"
                     android:padding="12dp"
@@ -123,9 +128,9 @@
                     android:id="@+id/tv_bar_code_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/tv_content"
-                    android:layout_alignStart="@+id/tv_content"
                     android:layout_below="@+id/tv_content"
+                    android:layout_alignStart="@+id/tv_content"
+                    android:layout_alignLeft="@+id/tv_content"
                     android:text="@string/barcode_format"
                     android:textSize="12sp"
                     android:textStyle="bold"
@@ -135,11 +140,11 @@
                     android:id="@+id/ib_clear"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tv_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignTop="@+id/tv_content"
-                    android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
                     android:background="@drawable/image_button_delete"
                     android:contentDescription="@string/clear_content_read"
                     android:onClick="clearContent"
@@ -147,6 +152,43 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_delete_black_24dp"
                     android:tint="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/testView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="169dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_toStartOf="@+id/ib_clear"
+                    android:layout_toLeftOf="@+id/ib_clear"
+                    android:background="@drawable/text_view_content_border"
+                    android:gravity="center"
+                    android:padding="12dp" />
+
+                <Button
+                    android:id="@+id/check"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="55dp"
+                    android:layout_marginLeft="55dp"
+                    android:layout_marginTop="95dp"
+                    android:layout_marginEnd="57dp"
+                    android:layout_marginRight="57dp"
+                    android:layout_toStartOf="@+id/ib_clear"
+
+                    android:layout_toLeftOf="@+id/ib_clear"
+                    android:background="@color/colorPrimary"
+                    android:text="check"
+                    android:textColor="@android:color/white" />
             </RelativeLayout>
 
             <Button
@@ -158,6 +200,8 @@
                 android:text="@string/open_url"
                 android:textColor="@android:color/white"
                 android:visibility="gone" />
+
+
         </LinearLayout>
 
     </RelativeLayout>
