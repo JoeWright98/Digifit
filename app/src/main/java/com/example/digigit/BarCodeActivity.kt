@@ -111,6 +111,7 @@ EasyPermissions.PermissionCallbacks {
         super.onActivityResult(requestCode, resultCode, data)
 
 
+
         if( requestCode == REQUEST_CODE_FULLSCREEN ){
             /*
              * Ensures that the flash light button and the
@@ -124,8 +125,9 @@ EasyPermissions.PermissionCallbacks {
                 processBarcodeResult(
                     data.getStringExtra(Database.KEY_NAME),
                     data.getStringExtra(Database.KEY_BARCODE_NAME) )
-                parseJson(data.getStringExtra(Database.KEY_NAME),
-                    data.getStringExtra(Database.KEY_BARCODE_NAME))
+                //parseJson(data.getStringExtra(Database.KEY_NAME),
+                   // data.getStringExtra(Database.KEY_BARCODE_NAME))
+
 
             }
         }
@@ -197,16 +199,16 @@ EasyPermissions.PermissionCallbacks {
             result.barcodeFormat.name
 
         )
+
     }
 
-    fun parseJson( text: String,
-                   barcodeFormatName: String){
+    fun parseJson(result: Result){
         //retrieving json stuff
-        val result = Result(
+       /* val result = Result(
             text,
             text.toByteArray(), /* Just to have something */
             arrayOf(), /* Just to have something*/
-            BarcodeFormat.valueOf(barcodeFormatName))
+            BarcodeFormat.valueOf(barcodeFormatName))*/
 
         val barcode = result.text
 
@@ -221,7 +223,14 @@ EasyPermissions.PermissionCallbacks {
 
                 val gson = GsonBuilder().create()
 
-                val productList = gson.fromJson(body, ProductList::class.java)
+                val thing = gson.fromJson(body, Object::class.java)
+
+
+                runOnUiThread{
+                    testView.text = thing.product.product_name + thing.product.code
+                }
+
+
 
 
             }
@@ -233,9 +242,10 @@ EasyPermissions.PermissionCallbacks {
 
 
     }
-    class ProductList(val products: List<Product>)
-    class ProductCode(val code: String)
-    class Product(val productCode: ProductCode, val product_name: String)
+    //class ProductList(val products: List<Product>)
+    //class ProductCode(val code: String)
+    class Product(val code: String, val product_name: String)
+    class Object(val product: Product)
 
 
     private fun processBarcodeResult(
@@ -262,7 +272,7 @@ EasyPermissions.PermissionCallbacks {
 
 
 
-       // parseJson(result)
+
 
         /* Saving the last read result.*/
         Database.saveResult(this, result)
@@ -270,8 +280,10 @@ EasyPermissions.PermissionCallbacks {
 
         /* Modifying UI. */
         tv_content.text = result.text
+        parseJson(result)
         processBarcodeType(true, result.barcodeFormat.name)
         //processButtonOpen(result)
+
 
 
 
