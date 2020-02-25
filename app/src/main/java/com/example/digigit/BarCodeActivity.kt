@@ -3,19 +3,11 @@ package com.example.digigit
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Patterns
 import android.view.View
-import android.webkit.URLUtil
-import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Request
-import com.android.volley.Response
 
-import com.android.volley.toolbox.Volley
 import com.example.digigit.util.*
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
@@ -24,19 +16,11 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
 import pub.devrel.easypermissions.EasyPermissions
 import pub.devrel.easypermissions.PermissionRequest
 
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
-import com.google.android.gms.common.api.Api
 import com.google.gson.GsonBuilder
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import java.io.IOException
-import java.text.FieldPosition
-import java.text.ParsePosition
 
 
 class BarCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler,
@@ -56,7 +40,7 @@ EasyPermissions.PermissionCallbacks {
 
 
         askCameraPermission()
-        lastResultVerification()
+        //lastResultVerification()
 
 
 
@@ -70,7 +54,10 @@ EasyPermissions.PermissionCallbacks {
      * */
     private fun lastResultVerification(){
         val result = Database.getSavedResult(this)
+
         if( result != null ){
+
+
             processBarcodeResult( result.text, result.barcodeFormat.name )
         }
     }
@@ -122,11 +109,12 @@ EasyPermissions.PermissionCallbacks {
             flashLight()
 
             if( resultCode == Activity.RESULT_OK ){
-                processBarcodeResult(
+
+
+               processBarcodeResult(
                     data.getStringExtra(Database.KEY_NAME),
                     data.getStringExtra(Database.KEY_BARCODE_NAME) )
-                //parseJson(data.getStringExtra(Database.KEY_NAME),
-                   // data.getStringExtra(Database.KEY_BARCODE_NAME))
+
 
 
             }
@@ -202,13 +190,8 @@ EasyPermissions.PermissionCallbacks {
 
     }
 
-    fun parseJson(result: Result){
+    private fun parseJson(result: Result){
         //retrieving json stuff
-       /* val result = Result(
-            text,
-            text.toByteArray(), /* Just to have something */
-            arrayOf(), /* Just to have something*/
-            BarcodeFormat.valueOf(barcodeFormatName))*/
 
         val barcode = result.text
 
@@ -223,11 +206,22 @@ EasyPermissions.PermissionCallbacks {
 
                 val gson = GsonBuilder().create()
 
-                val thing = gson.fromJson(body, Object::class.java)
+                val entity = gson.fromJson(body, Entity::class.java)
 
+                if(entity.product.product_name == null || entity.product.nutriments.carbohydrates_value == null || entity.product.nutriments.fat_serving == null
+                    || entity.product.nutriments.proteins_serving == null){
+                    unrecognizedCode(applicationContext, { clearContent() })
+                    return
+                }else {
 
-                runOnUiThread{
-                    testView.text = thing.product.product_name + thing.product.code
+                    runOnUiThread {
+                        testView.setText("")
+                        testView.append(
+                            entity.product.product_name + "\n" + "Protein value: " + entity.product.nutriments.proteins_serving + "\n" + "Carbohydrate value: " +
+                                    entity.product.nutriments.carbohydrates_value + "\n" + "Fat value: " + entity.product.nutriments.fat_serving
+                        )
+
+                    }
                 }
 
 
@@ -235,6 +229,7 @@ EasyPermissions.PermissionCallbacks {
 
             }
             override fun onFailure(call: Call, e: IOException) {
+                handleResult(result)
                 println("Failed")
             }
 
@@ -244,8 +239,9 @@ EasyPermissions.PermissionCallbacks {
     }
     //class ProductList(val products: List<Product>)
     //class ProductCode(val code: String)
-    class Product(val code: String, val product_name: String)
-    class Object(val product: Product)
+    class Entity(val product: Product)
+    class Product( val product_name: String, val nutriments: Nutrient)
+    class Nutrient(val proteins_serving: Float, val fat_serving: Float, val carbohydrates_value: Float )
 
 
     private fun processBarcodeResult(
@@ -258,7 +254,9 @@ EasyPermissions.PermissionCallbacks {
          * The following code is essential for the ringtone
          * not invoked for the same bar code
          * read in a row.
-         * */
+         *
+
+         */
         val resultSaved = Database.getSavedResult(this)
         if( resultSaved == null || !resultSaved.text.equals(text, true) ){
             notification(this)
@@ -274,8 +272,11 @@ EasyPermissions.PermissionCallbacks {
 
 
 
+
+
         /* Saving the last read result.*/
-        Database.saveResult(this, result)
+        //Database.saveResult(this, result)
+
 
 
         /* Modifying UI. */
@@ -298,48 +299,9 @@ EasyPermissions.PermissionCallbacks {
         tv_bar_code_type.visibility = if(status) View.VISIBLE else View.GONE
     }
 
-    /*
-     * Verification of content type read in code
-     * bar for correct work with the action button.
-     * */
-    private fun processButtonOpen(result: Result){
-        when{
-            URLUtil.isValidUrl(result.text) ->
-                setButtonOpenAction(resources.getString(R.string.open_url)) {
-                    val i = Intent(Intent.ACTION_VIEW)
-                    i.data = Uri.parse(result.text)
-                    startActivity(i)
-                }
-            Patterns.EMAIL_ADDRESS.matcher(result.text).matches() ->
-                setButtonOpenAction( getString(R.string.open_email) ) {
-                    val i = Intent(Intent.ACTION_VIEW)
-                    i.data = Uri.parse("mailto:?body=${result.text}")
-                    startActivity(i)
-                }
-            Patterns.PHONE.matcher(result.text).matches() ->
-                setButtonOpenAction( getString(R.string.open_call) ) {
-                    val i = Intent(Intent.ACTION_DIAL)
-                    i.data = Uri.parse("tel:${result.text}")
-                    startActivity(i)
-                }
-            else -> setButtonOpenAction(status = false)
-        }
-    }
 
-    /*
-     * Method of setting status and content of
-     * action trigger button if the content of the
-     * Code bar is: email, url or phone.
-     * */
-    private fun setButtonOpenAction(
-        label: String = "",
-        status: Boolean = true,
-        callbackClick:()->Unit = {} ){
 
-        bt_open.text = label
-        bt_open.visibility = if(status) View.VISIBLE else View.GONE
-        bt_open.setOnClickListener { callbackClick() }
-    }
+
 
 
     /* *** Click Listener Algorithms *** */
@@ -350,7 +312,6 @@ EasyPermissions.PermissionCallbacks {
     fun clearContent(view: View? = null){
         tv_content.text = getString(R.string.nothing_read)
         processBarcodeType(false)
-        setButtonOpenAction(status = false)
         Database.saveResult(this)
     }
 
