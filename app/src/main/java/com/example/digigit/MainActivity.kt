@@ -1,5 +1,6 @@
 package com.example.digigit
 
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -13,11 +14,19 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
+import com.firebase.ui.auth.AuthUI
+import kotlin.math.log
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    val LOGIN_CODE = ""
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,16 +53,68 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
+
     }
+
+    /*fun checkLoginStatus(menu: Menu){
+        var loggedInMenuItem = menu.findItem(R.id.action_login)
+        var loggedOutMenuItem = menu.findItem(R.id.action_logout)
+        if (LOGIN_CODE == "LOGGED_OUT"){
+            loggedOutMenuItem.setVisible(false)
+            loggedInMenuItem.setVisible(true)
+        }else{
+            loggedOutMenuItem.setVisible(true)
+            loggedInMenuItem.setVisible(false)
+        }
+    }*/
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
+        //checkLoginStatus(menu)
+
         return true
     }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun  onOptionsItemSelected(menuItem: MenuItem): Boolean{
+
+       return when(menuItem.itemId){
+           R.id.action_login->{
+
+
+               //LOGIN_CODE = "LOGGED_IN"
+               val homeIntent = Intent(this@MainActivity, LoginScreenActivity::class.java)
+               startActivity(homeIntent)
+
+               return false
+           }
+           R.id.action_logout->{
+
+               //LOGIN_CODE = "LOGGED_OUT"
+               AuthUI.getInstance().signOut(this)
+               Toast.makeText(applicationContext,"User logged out", Toast.LENGTH_LONG).show()
+               return false
+           }else->return super.onOptionsItemSelected(menuItem)
+       } // val id = menuItem.getItemId()
+
+        /*if (id == R.id.action_login){
+
+            val homeIntent = Intent(this@MainActivity, LoginScreenActivity::class.java)
+            startActivity(homeIntent)
+            return false
+
+
+        }
+        if (id == R.id.action_logout){
+            AuthUI.getInstance().signOut(this)
+        }*/
+        return super.onOptionsItemSelected(menuItem)
     }
 }

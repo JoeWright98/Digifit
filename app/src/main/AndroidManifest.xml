@@ -30,6 +30,10 @@
             android:name=".ui.gallery.DiaryFragment"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".LoginScreenActivity"
+            android:screenOrientation="portrait">
+        </activity>
 
 
     </application>
