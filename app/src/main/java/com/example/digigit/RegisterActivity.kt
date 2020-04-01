@@ -3,9 +3,7 @@ package com.example.digigit
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 
@@ -36,7 +34,8 @@ class RegisterActivity: AppCompatActivity() {
     internal lateinit var register: Button
     internal lateinit var myAuth: FirebaseAuth
     lateinit var firestore: FirebaseFirestore
-    lateinit var query: Query
+    internal lateinit var rbActivity:RadioGroup
+    internal lateinit var rbGender:RadioGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,18 +47,28 @@ class RegisterActivity: AppCompatActivity() {
         etWeight = findViewById(R.id.weight)
         etAge = findViewById(R.id.age)
         etHeight = findViewById(R.id.height)
+        myAuth = FirebaseAuth.getInstance()
+
         register.setOnClickListener(object: View.OnClickListener{
             override fun onClick(v: View?) {
-                val regIntent = Intent(this@RegisterActivity, MainActivity::class.java)
-                startActivity(regIntent)
+
                 myName = etName.getText().toString().trim()
                 myWeight = etWeight.getText().toString().trim()
                 myAge = etAge.getText().toString().trim()
                 myHeight = etHeight.getText().toString().trim()
-
-
+                myEmail = etEmail.getText().toString().trim()
+                myPassword = etPassword.getText().toString().trim()
                 addUser()
-                //CreateUser()
+                CreateUser()
+
+               /* val regIntent = Intent(this@RegisterActivity, MainActivity::class.java)
+                startActivity(regIntent)*/
+
+
+
+
+
+
 
             }
         })
