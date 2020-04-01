@@ -8,11 +8,11 @@
     tools:context="com.example.digigit.LoginScreenActivity">
 
     <EditText
-        android:layout_marginTop="80dp"
         android:id="@+id/myEmail"
-        android:hint="Enter Email"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:hint="Enter Email" />
 
     <EditText
         android:id="@+id/myPassword"
@@ -87,7 +87,7 @@
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp">
+        >
 
         <RadioButton
             android:id="@+id/male"
@@ -115,7 +115,6 @@
         android:text="Register"
         android:textColor="#FFFFFF"
         android:textStyle="bold" />
-
 
 
 </LinearLayout>

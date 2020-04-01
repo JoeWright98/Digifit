@@ -8,13 +8,13 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import com.example.digigit.ui.home.HomeFragment
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 class LoginScreenActivity: AppCompatActivity() {
-    internal lateinit var signUp:Button
+    internal lateinit var logIn:Button
+    internal lateinit var register:Button
     internal lateinit var etEmail:EditText
     internal lateinit var etPassword:EditText
     internal lateinit var myEmail:String
@@ -31,14 +31,21 @@ class LoginScreenActivity: AppCompatActivity() {
             startActivity(homeIntent)
             finish()
         }
-        signUp = findViewById(R.id.myButton)
+        logIn = findViewById(R.id.myButton)
         etEmail = findViewById(R.id.myEmail)
         etPassword = findViewById(R.id.myPassword)
-        signUp.setOnClickListener(object: View.OnClickListener {
+        register = findViewById(R.id.regButton)
+        logIn.setOnClickListener(object: View.OnClickListener {
            override fun onClick(v:View) {
                 myEmail = etEmail.getText().toString().trim()
                 myPassword = etPassword.getText().toString().trim()
                 CreateUser()
+            }
+        })
+        register.setOnClickListener(object: View.OnClickListener{
+            override fun onClick(v: View?) {
+                val regIntent = Intent(this@LoginScreenActivity, RegisterActivity::class.java)
+                startActivity(regIntent)
             }
         })
     }
