@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -34,8 +35,10 @@ class RegisterActivity: AppCompatActivity() {
     internal lateinit var register: Button
     internal lateinit var myAuth: FirebaseAuth
     lateinit var firestore: FirebaseFirestore
-    internal lateinit var rbActivity:RadioGroup
-    internal lateinit var rbGender:RadioGroup
+    internal lateinit var rgActivity:RadioGroup
+    internal lateinit var rgGender:RadioGroup
+    internal lateinit var myActivity:String
+    internal lateinit var myGender:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +50,8 @@ class RegisterActivity: AppCompatActivity() {
         etWeight = findViewById(R.id.weight)
         etAge = findViewById(R.id.age)
         etHeight = findViewById(R.id.height)
+        rgActivity = findViewById(R.id.activity)
+        rgGender = findViewById(R.id.gender)
         myAuth = FirebaseAuth.getInstance()
 
         register.setOnClickListener(object: View.OnClickListener{
@@ -58,6 +63,19 @@ class RegisterActivity: AppCompatActivity() {
                 myHeight = etHeight.getText().toString().trim()
                 myEmail = etEmail.getText().toString().trim()
                 myPassword = etPassword.getText().toString().trim()
+                var activityId: Int = rgActivity.checkedRadioButtonId
+                if (activityId!=-1){ // If any radio button checked from radio group
+                    // Get the instance of radio button using id
+                    val radio:RadioButton = findViewById(activityId)
+                    myActivity = radio.text.toString()
+                }
+                var genderId: Int = rgGender.checkedRadioButtonId
+                if (genderId!=-1){ // If any radio button checked from radio group
+                    // Get the instance of radio button using id
+                    val radio:RadioButton = findViewById(genderId)
+                    myGender = radio.text.toString()
+                }
+
                 addUser()
                 CreateUser()
 
@@ -81,15 +99,13 @@ class RegisterActivity: AppCompatActivity() {
     }
 
      fun addUser() {
-        // val batch = firestore.batch()
-        // val userRef = firestore.collection("Users").document()
-        // Get a reference to the users collection
-
          val user = com.example.digigit.model.User()
          user.name = myName
          user.weight = myWeight
          user.age = myAge
          user.height = myHeight
+         user.activity = myActivity
+         user.gender = myGender
 
 
 

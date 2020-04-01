@@ -86,6 +86,7 @@
         android:text="Are you male or female?"
         android:textSize="18sp" />
     <RadioGroup
+        android:id="@+id/gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
