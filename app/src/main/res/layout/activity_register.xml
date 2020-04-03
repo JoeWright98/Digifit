@@ -11,7 +11,6 @@
         android:id="@+id/myEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:hint="Enter Email" />
 
     <EditText
@@ -43,7 +42,7 @@
         android:hint="Enter Current Weight(kg)"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         />
 
     <TextView
@@ -52,7 +51,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
         android:text="How active are you?(Please select one)"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
     <RadioGroup
         android:id = "@+id/activity"
         android:layout_width="match_parent"
@@ -83,8 +82,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
-        android:text="Are you male or female?"
-        android:textSize="18sp" />
+        android:text="Are you male or female?(Please select one)"
+        android:textSize="14sp" />
     <RadioGroup
         android:id="@+id/gender"
         android:layout_width="match_parent"
@@ -106,13 +105,41 @@
 
 
     </RadioGroup>
+    <TextView
+        android:id="@+id/goalweight_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="Do you plan to gain or lose weight?(Please select one)"
+        android:textSize="14sp" />
+    <RadioGroup
+        android:id="@+id/goalweight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <RadioButton
+            android:id="@+id/gain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gain weight" />
+
+        <RadioButton
+            android:id="@+id/lose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lose weight" />
+
+
+
+    </RadioGroup>
 
 
     <Button
         android:id="@+id/regButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:background="#0000FF"
         android:text="Register"
         android:textColor="#FFFFFF"

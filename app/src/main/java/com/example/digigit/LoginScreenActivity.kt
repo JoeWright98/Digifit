@@ -50,9 +50,9 @@ class LoginScreenActivity: AppCompatActivity() {
         })
     }
     private fun CreateUser() {
-        myAuth.createUserWithEmailAndPassword(myEmail, myPassword).addOnCompleteListener(object:OnCompleteListener<AuthResult> {
-            override fun onComplete(@NonNull task:Task<AuthResult>) {
-                if (task.isSuccessful())
+        myAuth.signInWithEmailAndPassword(myEmail, myPassword).addOnCompleteListener {
+
+                if (it.isSuccessful())
                 {
                     val homeIntent = Intent(this@LoginScreenActivity, MainActivity::class.java)
                     startActivity(homeIntent)
@@ -60,9 +60,9 @@ class LoginScreenActivity: AppCompatActivity() {
                 }
                 else
                 {
-                    Toast.makeText(this@LoginScreenActivity, "Error is " + task.getException(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginScreenActivity, "Error is " + it.getException(), Toast.LENGTH_SHORT).show()
                 }
             }
-        })
+
     }
 }
