@@ -15,9 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlin.math.log
 
 
@@ -25,7 +27,8 @@ class MainActivity : AppCompatActivity() {
 
     internal lateinit var myAuth:FirebaseAuth
     private lateinit var appBarConfiguration: AppBarConfiguration
-    val LOGIN_CODE = ""
+
+    //var LOGIN_CODE:String = "LOGGED_OUT"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -51,28 +54,39 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        myAuth = FirebaseAuth.getInstance()
+
+
+
 
 
 
     }
 
-   /* fun checkLoginStatus(menu: Menu){
+    fun checkLoginStatus(menu: Menu){
         var loggedInMenuItem = menu.findItem(R.id.action_login)
         var loggedOutMenuItem = menu.findItem(R.id.action_logout)
-         myAuth = FirebaseAuth.getInstance()
-        if (myAuth.currentUser != null){
-            loggedOutMenuItem.setVisible(true)
-            loggedInMenuItem.setVisible(false)
-        }else{
+
+
+
+        if (myAuth.currentUser == null){
             loggedOutMenuItem.setVisible(false)
             loggedInMenuItem.setVisible(true)
+            val intent = Intent(this, LoginScreenActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }else{
+            loggedOutMenuItem.setVisible(true)
+            loggedInMenuItem.setVisible(false)
         }
-    }*/
+
+
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
-        //checkLoginStatus(menu)
+        checkLoginStatus(menu)
+
 
 
 
@@ -96,8 +110,10 @@ class MainActivity : AppCompatActivity() {
                return false
            }
            R.id.action_logout->{
-
-               AuthUI.getInstance().signOut(this)
+              // LOGIN_CODE = "LOGGED_OUT"
+               FirebaseAuth.getInstance().signOut()
+               val homeIntent = Intent(this@MainActivity, LoginScreenActivity::class.java)
+               startActivity(homeIntent)
                Toast.makeText(applicationContext,"User logged out", Toast.LENGTH_LONG).show()
                return false
            }else->return super.onOptionsItemSelected(menuItem)

@@ -156,6 +156,7 @@ class RegisterActivity: AppCompatActivity() {
 
                     //firestore.collection("Users").add(user)
                     val homeIntent = Intent(this@RegisterActivity, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(homeIntent)
                     finish()
                 }
@@ -167,7 +168,10 @@ class RegisterActivity: AppCompatActivity() {
         }
     }
 
-class RTUser(val uid:String, val name: String,val weight: Int, val age: Int, val height: Int,
-             val daily_protein_consumed:Int, val daily_fat_consumed:Int, val daily_carbs_consumed:Int,
-             val daily_protein_goal:Int, val daily_fat_goal:Int, val daily_carbs_goal:Int,
-             val activity:String, val gender:String,  val tdee:Int)
+class RTUser(var uid:String, var name: String,var weight: Int, var age: Int, var height: Int,
+             var daily_protein_consumed:Int, var daily_fat_consumed:Int, var daily_carbs_consumed:Int,
+             var daily_protein_goal:Int, var daily_fat_goal:Int, var daily_carbs_goal:Int,
+             var activity:String, var gender:String,  var tdee:Int){
+    constructor():this("","",0,0,0,0,0,0,0,
+        0,0,"","",0)
+}
