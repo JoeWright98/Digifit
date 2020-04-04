@@ -1,4 +1,4 @@
-package com.example.digigit.ui.send
+package com.example.digigit.ui.progress
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,10 +14,7 @@ import com.jjoe64.graphview.series.LineGraphSeries
 import com.jjoe64.graphview.GraphView
 
 import com.jjoe64.graphview.series.DataPoint
-import com.jjoe64.graphview.GridLabelRenderer
-import android.R
 import kotlinx.android.synthetic.main.fragment_send.*
-import kotlinx.android.synthetic.main.fragment_send.view.*
 
 
 class SendFragment : Fragment() {

@@ -50,6 +50,7 @@ class RegisterActivity: AppCompatActivity() {
     internal  var myDailyFatConsumed:Int = 0
     internal  var myDailyProteinConsumed:Int = 0
     internal  var myDailyCarbsConsumed:Int = 0
+    internal  var myDailyCaloriesConsumed:Int = 0
     internal var myREE: Double = 0.0
     internal var myTDEE: Int = 0
 
@@ -137,9 +138,9 @@ class RegisterActivity: AppCompatActivity() {
 
      fun addUser() {
          val uid = FirebaseAuth.getInstance().uid?:""
-         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/details")
          val rtuser = RTUser(uid,myName,myWeight,myAge,myHeight, myDailyProteinConsumed,myDailyFatConsumed, myDailyCarbsConsumed,
-             myDailyProteinGoal, myDailyFatGoal, myDailyCarbsGoal, myActivity,myGender, myTDEE)
+             myDailyProteinGoal, myDailyFatGoal, myDailyCarbsGoal, myActivity,myGender, myTDEE,myDailyCaloriesConsumed)
          ref.setValue(rtuser)
 
 
@@ -171,7 +172,7 @@ class RegisterActivity: AppCompatActivity() {
 class RTUser(var uid:String, var name: String,var weight: Int, var age: Int, var height: Int,
              var daily_protein_consumed:Int, var daily_fat_consumed:Int, var daily_carbs_consumed:Int,
              var daily_protein_goal:Int, var daily_fat_goal:Int, var daily_carbs_goal:Int,
-             var activity:String, var gender:String,  var tdee:Int){
+             var activity:String, var gender:String,  var tdee:Int, var dailyCaloriesConsumed:Int){
     constructor():this("","",0,0,0,0,0,0,0,
-        0,0,"","",0)
+        0,0,"","",0,0)
 }

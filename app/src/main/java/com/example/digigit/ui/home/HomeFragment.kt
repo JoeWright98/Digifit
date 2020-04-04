@@ -1,5 +1,7 @@
 package com.example.digigit.ui.home
 
+import android.app.Application
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
+import com.example.digigit.LoginScreenActivity
 import com.example.digigit.R
 import com.example.digigit.RTUser
 import com.google.firebase.auth.FirebaseAuth
@@ -37,24 +41,31 @@ class HomeFragment : Fragment() {
         homeViewModel.text.observe(this, Observer {
             textView.text = it
         })
-
-
+        myAuth = FirebaseAuth.getInstance()
 
 
         tvWelcome = root.findViewById(R.id.welcome)
-       getUser()
+
+        getUserName()
 
         return root
 
     }
-    private fun getUser(){
+    private fun getUserName(){
         uid = FirebaseAuth.getInstance().currentUser!!.uid
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/details")
         ref.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(p0: DataSnapshot){
 
                 val user = p0.getValue(RTUser::class.java)
-                tvWelcome.setText("Welcome ${user!!.name}")
+                if (myAuth.currentUser != null){
+                    val usersName = user!!.name ?:""
+
+                    tvWelcome.text = "Welcome $usersName"
+
+                }else {
+                    tvWelcome.setText("")
+                }
 
             }
 

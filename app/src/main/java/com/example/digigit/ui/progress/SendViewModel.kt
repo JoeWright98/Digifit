@@ -1,16 +1,13 @@
-package com.example.digigit.ui.home
+package com.example.digigit.ui.progress
 
-import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class HomeViewModel : ViewModel() {
-    internal lateinit var tvWelcome: TextView
+class SendViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = ""
     }
     val text: LiveData<String> = _text
-
 }

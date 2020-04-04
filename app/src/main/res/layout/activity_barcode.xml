@@ -106,6 +106,42 @@
                 android:layout_weight="1">
 
                 <TextView
+                    android:id="@+id/product_fat_tv"
+                    android:layout_width="225dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="49dp"
+                    android:layout_marginLeft="49dp"
+                    android:layout_marginTop="254dp"
+                    android:layout_marginEnd="48dp"
+                    android:layout_marginRight="48dp"
+                    android:layout_toStartOf="@+id/ib_clear"
+                    android:layout_toLeftOf="@+id/ib_clear"
+                    android:background="@drawable/text_view_content_border"
+                    android:gravity="center"
+                    android:padding="12dp" />
+
+                <TextView
+                    android:id="@+id/product_calories_tv"
+                    android:layout_width="225dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="49dp"
+                    android:layout_marginLeft="49dp"
+                    android:layout_marginTop="306dp"
+                    android:layout_marginEnd="48dp"
+                    android:layout_marginRight="48dp"
+                    android:layout_toStartOf="@+id/ib_clear"
+                    android:layout_toLeftOf="@+id/ib_clear"
+                    android:background="@drawable/text_view_content_border"
+                    android:gravity="center"
+                    android:padding="12dp" />
+
+                <TextView
                     android:id="@+id/tv_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -154,17 +190,53 @@
                     android:tint="@android:color/white" />
 
                 <TextView
-                    android:id="@+id/testView"
-                    android:layout_width="288dp"
-                    android:layout_height="240dp"
+                    android:id="@+id/product_name_tv"
+                    android:layout_width="225dp"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginTop="106dp"
-                    android:layout_marginEnd="60dp"
-                    android:layout_marginRight="60dp"
+                    android:layout_marginStart="49dp"
+                    android:layout_marginLeft="49dp"
+                    android:layout_marginTop="81dp"
+                    android:layout_marginEnd="48dp"
+                    android:layout_marginRight="48dp"
+                    android:layout_toStartOf="@+id/ib_clear"
+                    android:layout_toLeftOf="@+id/ib_clear"
+                    android:background="@drawable/text_view_content_border"
+                    android:gravity="center"
+                    android:padding="12dp" />
+
+                <TextView
+                    android:id="@+id/product_protein_tv"
+                    android:layout_width="225dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="49dp"
+                    android:layout_marginLeft="49dp"
+                    android:layout_marginTop="140dp"
+                    android:layout_marginEnd="48dp"
+                    android:layout_marginRight="48dp"
+                    android:layout_toStartOf="@+id/ib_clear"
+                    android:layout_toLeftOf="@+id/ib_clear"
+                    android:background="@drawable/text_view_content_border"
+                    android:gravity="center"
+                    android:padding="12dp" />
+
+                <TextView
+                    android:id="@+id/product_carbs_tv"
+                    android:layout_width="225dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="49dp"
+                    android:layout_marginLeft="49dp"
+                    android:layout_marginTop="193dp"
+                    android:layout_marginEnd="48dp"
+                    android:layout_marginRight="48dp"
                     android:layout_toStartOf="@+id/ib_clear"
                     android:layout_toLeftOf="@+id/ib_clear"
                     android:background="@drawable/text_view_content_border"
@@ -173,22 +245,23 @@
 
                 <Button
                     android:id="@+id/add"
-                    android:layout_width="103dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="98dp"
+                    android:layout_height="60dp"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:layout_marginStart="275dp"
-                    android:layout_marginLeft="275dp"
-                    android:layout_marginTop="297dp"
+                    android:layout_marginStart="280dp"
+                    android:layout_marginLeft="280dp"
+                    android:layout_marginTop="285dp"
                     android:layout_marginEnd="-40dp"
                     android:layout_marginRight="-40dp"
                     android:layout_toStartOf="@+id/ib_clear"
-
+                    android:onClick="addFood"
                     android:layout_toLeftOf="@+id/ib_clear"
                     android:background="@color/colorPrimary"
                     android:text="Add"
                     android:textColor="@android:color/white" />
+
             </RelativeLayout>
 
             <Button

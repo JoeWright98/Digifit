@@ -4,11 +4,18 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.provider.SyncStateContract.Helpers.update
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.digigit.ui.diary.DiaryFragment
 
 import com.example.digigit.util.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
 import kotlinx.android.synthetic.main.activity_barcode.*
@@ -21,12 +28,23 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import java.io.IOException
+import androidx.core.app.ComponentActivity
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 class BarCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler,
 EasyPermissions.PermissionCallbacks {
     val REQUEST_CODE_CAMERA = 182 /* Random integer */
     val REQUEST_CODE_FULLSCREEN = 184 /* Random integer */
+    internal lateinit var pName:String
+    internal var pProtein:Float = 0F
+    internal var pFat:Float = 0F
+    internal var pCarbs:Float = 0F
+    internal var pEnergy:Float = 0F
 
     private var textView: TextView? = null
 
@@ -41,11 +59,49 @@ EasyPermissions.PermissionCallbacks {
 
         askCameraPermission()
         //lastResultVerification()
+        add.setOnClickListener(object: View.OnClickListener{
+            override fun onClick(v: View?) {
+                addMeal()
+                finish()
+
+
+            }
+        })
 
 
 
     }
 
+    private fun addMeal(){
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/details")
+        val mref = FirebaseDatabase.getInstance().getReference("/users/$uid/foodData/$pName")
+
+        val meal = Meal(pName,pProtein, pFat, pCarbs, pEnergy)
+        mref.setValue(meal)
+        ref.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot){
+
+                val user = p0.getValue(RTUser::class.java)
+                user!!.dailyCaloriesConsumed = user!!.dailyCaloriesConsumed + pEnergy.toInt()
+                ref.setValue(user)
+
+
+
+
+
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+        })
+
+    }
+    class Meal(val name:String, val protein:Float, val fat:Float, val carbs:Float, val calories:Float) {
+        constructor() : this("", 0F, 0F, 0F, 0F)
+    }
 
     /*
      * If we have any read results
@@ -208,18 +264,32 @@ EasyPermissions.PermissionCallbacks {
 
                 val entity = gson.fromJson(body, Entity::class.java)
 
-                if(entity.product.product_name == null || entity.product.nutriments.carbohydrates_value == null || entity.product.nutriments.fat_serving == null
-                    || entity.product.nutriments.proteins_serving == null){
+                if(entity.product.product_name == null || entity.product.nutriments.carbohydrates_value == null || entity.product.nutriments.fat_value == null
+                    || entity.product.nutriments.proteins_value == null  || entity.product.nutriments.carbohydrates_value == null){
                     unrecognizedCode(applicationContext, { clearContent() })
                     return
                 }else {
 
                     runOnUiThread {
-                        testView.setText("")
-                        testView.append(
-                            entity.product.product_name + "\n" + "Protein value: " + entity.product.nutriments.proteins_serving + "\n" + "Carbohydrate value: " +
-                                    entity.product.nutriments.carbohydrates_value + "\n" + "Fat value: " + entity.product.nutriments.fat_serving
-                        )
+                        product_name_tv.setText("")
+                        product_name_tv.append(entity.product.product_name )
+                        pName = entity.product.product_name
+                        product_protein_tv.setText("")
+                        product_protein_tv.append("Protein value: " + entity.product.nutriments.proteins_value )
+                        pProtein = entity.product.nutriments.proteins_value
+                        product_carbs_tv.setText("")
+                        product_carbs_tv.append("Carbohydrate value: " + entity.product.nutriments.carbohydrates_value)
+                        pCarbs = entity.product.nutriments.carbohydrates_value
+                        product_fat_tv.setText("")
+                        product_fat_tv.append("Fat value: " + entity.product.nutriments.fat_value )
+                        pFat = entity.product.nutriments.fat_value
+                        product_calories_tv.setText("")
+                        product_calories_tv.append("Calories: " + entity.product.nutriments.energy_value )
+                        pEnergy = entity.product.nutriments.energy_value
+
+
+
+
 
                     }
                 }
@@ -236,12 +306,13 @@ EasyPermissions.PermissionCallbacks {
         })
 
 
+
     }
     //class ProductList(val products: List<Product>)
     //class ProductCode(val code: String)
     class Entity(val product: Product)
     class Product( val product_name: String, val nutriments: Nutrient)
-    class Nutrient(val proteins_serving: Float, val fat_serving: Float, val carbohydrates_value: Float )
+    class Nutrient(val proteins_value: Float, val fat_value: Float, val carbohydrates_value: Float, val energy_value: Float)
 
 
     private fun processBarcodeResult(

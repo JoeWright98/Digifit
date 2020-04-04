@@ -31,9 +31,12 @@ class MainActivity : AppCompatActivity() {
     //var LOGIN_CODE:String = "LOGGED_OUT"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        myAuth = FirebaseAuth.getInstance()
+
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
 
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
@@ -54,8 +57,6 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        myAuth = FirebaseAuth.getInstance()
-
 
 
 
@@ -68,12 +69,10 @@ class MainActivity : AppCompatActivity() {
         var loggedOutMenuItem = menu.findItem(R.id.action_logout)
 
 
-
         if (myAuth.currentUser == null){
             loggedOutMenuItem.setVisible(false)
             loggedInMenuItem.setVisible(true)
-            val intent = Intent(this, LoginScreenActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+
         }else{
             loggedOutMenuItem.setVisible(true)
             loggedInMenuItem.setVisible(false)
@@ -86,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         checkLoginStatus(menu)
+
 
 
 
