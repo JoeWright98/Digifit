@@ -13,7 +13,10 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
@@ -51,6 +54,7 @@ class RegisterActivity: AppCompatActivity() {
     internal  var myDailyProteinConsumed:Int = 0
     internal  var myDailyCarbsConsumed:Int = 0
     internal  var myDailyCaloriesConsumed:Int = 0
+    internal var myPoints:Int = 0
     internal var myREE: Double = 0.0
     internal var myTDEE: Int = 0
 
@@ -126,6 +130,7 @@ class RegisterActivity: AppCompatActivity() {
                 CreateUser()
 
 
+
             }
         })
 
@@ -135,15 +140,102 @@ class RegisterActivity: AppCompatActivity() {
         // Firestore
         firestore = Firebase.firestore
     }
+    private fun addAchievements(){
+        addAchievement1()
+        addAchievement2()
+        addAchievement3()
+    }
+
+    private fun addAchievement1(){
+
+        val uid = FirebaseAuth.getInstance().uid?:""
+        val ref = FirebaseDatabase.getInstance().getReference("/achievements/$uid/achievement1")
+        val achievement1 = Achievement("Scan", 15, "no")
+
+        ref.setValue(achievement1)
+
+
+
+
+
+    }
+    private fun addAchievement2(){
+
+        val uid = FirebaseAuth.getInstance().uid?:""
+        val ref = FirebaseDatabase.getInstance().getReference("/achievements/$uid/achievement2")
+        val achievement2 = Achievement("Register Account", 10, "no")
+
+        ref.setValue(achievement2)
+
+
+
+
+
+    }
+    private fun addAchievement3(){
+
+        val uid = FirebaseAuth.getInstance().uid?:""
+        val ref = FirebaseDatabase.getInstance().getReference("/achievements/$uid/achievement3")
+        val achievement3 = Achievement("Upload profile picture", 10, "no")
+
+        ref.setValue(achievement3)
+
+
+
+
+
+    }
 
      fun addUser() {
          val uid = FirebaseAuth.getInstance().uid?:""
-         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/details")
+         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/")
          val rtuser = RTUser(uid,myName,myWeight,myAge,myHeight, myDailyProteinConsumed,myDailyFatConsumed, myDailyCarbsConsumed,
-             myDailyProteinGoal, myDailyFatGoal, myDailyCarbsGoal, myActivity,myGender, myTDEE,myDailyCaloriesConsumed)
+             myDailyProteinGoal, myDailyFatGoal, myDailyCarbsGoal, myActivity,myGender, myTDEE,myDailyCaloriesConsumed,myPoints)
          ref.setValue(rtuser)
 
 
+
+    }
+    fun checkIfRegisterComplete(){
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val uref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        uref.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onCancelled(p1: DatabaseError) {
+
+            }
+
+            override fun onDataChange(p1: DataSnapshot) {
+                val rtuser = p1.getValue(RTUser::class.java)
+                rtuser!!.points = rtuser!!.points + 10
+                uref.setValue(rtuser)
+            }
+
+        })
+    }
+
+    fun registerAchievement(){
+            val uid = FirebaseAuth.getInstance().currentUser!!.uid
+            val ref = FirebaseDatabase.getInstance().getReference("/achievements/$uid/achievement2")
+            ref.addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+
+                }
+
+                override fun onDataChange(p0: DataSnapshot) {
+
+                    val achievement = p0.getValue(Achievement::class.java)
+                    if (achievement!!.completed == "no"){
+                        achievement!!.completed = "yes"
+                        checkIfRegisterComplete()
+                        ref.setValue(achievement)
+                        Toast.makeText(applicationContext,"Achievement unlocked: Register an account! Check out the achievements tab for more achievements! Gained 10 points!", Toast.LENGTH_LONG).show()
+
+                    }
+
+
+                }
+
+            })
 
     }
 
@@ -154,6 +246,8 @@ class RegisterActivity: AppCompatActivity() {
                 if (it.isSuccessful)
                 {
                     addUser()
+                    addAchievements()
+                    registerAchievement()
 
                     //firestore.collection("Users").add(user)
                     val homeIntent = Intent(this@RegisterActivity, MainActivity::class.java)
@@ -172,7 +266,7 @@ class RegisterActivity: AppCompatActivity() {
 class RTUser(var uid:String, var name: String,var weight: Int, var age: Int, var height: Int,
              var daily_protein_consumed:Int, var daily_fat_consumed:Int, var daily_carbs_consumed:Int,
              var daily_protein_goal:Int, var daily_fat_goal:Int, var daily_carbs_goal:Int,
-             var activity:String, var gender:String,  var tdee:Int, var dailyCaloriesConsumed:Int){
+             var activity:String, var gender:String,  var tdee:Int, var dailyCaloriesConsumed:Int, var points:Int){
     constructor():this("","",0,0,0,0,0,0,0,
-        0,0,"","",0,0)
+        0,0,"","",0,0,0)
 }

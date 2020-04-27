@@ -9,8 +9,8 @@
     <string name="menu_home">Home</string>
     <string name="menu_diary">Diary</string>
     <string name="menu_progress">Progress</string>
-    <string name="menu_settings">Settings</string>
-    <string name="menu_achievements">Achievements</string>
+    <string name="menu_settings">Achievements</string>
+    <string name="menu_achievements">Leaderboard</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>

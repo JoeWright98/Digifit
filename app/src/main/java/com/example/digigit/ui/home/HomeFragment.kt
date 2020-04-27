@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
     }
     private fun getUserName(){
         uid = FirebaseAuth.getInstance().currentUser!!.uid
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/details")
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/")
         ref.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(p0: DataSnapshot){
 

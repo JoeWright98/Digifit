@@ -32,8 +32,7 @@ import androidx.core.app.ComponentActivity
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
+import android.widget.Toast
 
 
 class BarCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler,
@@ -62,6 +61,7 @@ EasyPermissions.PermissionCallbacks {
         add.setOnClickListener(object: View.OnClickListener{
             override fun onClick(v: View?) {
                 addMeal()
+                completeAchievementScan()
                 finish()
 
 
@@ -72,10 +72,54 @@ EasyPermissions.PermissionCallbacks {
 
     }
 
+    fun checkIfScanComplete(){
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val uref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        uref.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onCancelled(p1: DatabaseError) {
+
+            }
+
+            override fun onDataChange(p1: DataSnapshot) {
+                val rtuser = p1.getValue(RTUser::class.java)
+                rtuser!!.points = rtuser!!.points + 15
+                uref.setValue(rtuser)
+            }
+
+        })
+    }
+    fun completeAchievementScan(){
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val ref = FirebaseDatabase.getInstance().getReference("/achievements/$uid/achievement1")
+        ref.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+
+                val achievement = p0.getValue(Achievement::class.java)
+                if (achievement!!.completed == "no"){
+                    achievement!!.completed = "yes"
+                    checkIfScanComplete()
+                    ref.setValue(achievement)
+                    Toast.makeText(applicationContext,"Achievement unlocked: Scan your first item! Gained 15 points!", Toast.LENGTH_LONG).show()
+
+                }
+
+
+            }
+
+        })
+
+
+    }
+
+
     private fun addMeal(){
         val uid = FirebaseAuth.getInstance().currentUser!!.uid
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/details")
-        val mref = FirebaseDatabase.getInstance().getReference("/users/$uid/foodData/$pName")
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        val mref = FirebaseDatabase.getInstance().getReference("foodData/$uid/$pName")
 
         val meal = Meal(pName,pProtein, pFat, pCarbs, pEnergy)
         mref.setValue(meal)
@@ -84,6 +128,9 @@ EasyPermissions.PermissionCallbacks {
 
                 val user = p0.getValue(RTUser::class.java)
                 user!!.dailyCaloriesConsumed = user!!.dailyCaloriesConsumed + pEnergy.toInt()
+                user!!.daily_protein_consumed = user!!.daily_protein_consumed + pProtein.toInt()
+                user!!.daily_carbs_consumed = user!!.daily_carbs_consumed + pCarbs.toInt()
+                user!!.daily_fat_consumed = user!!.daily_fat_consumed + pFat.toInt()
                 ref.setValue(user)
 
 
@@ -99,9 +146,7 @@ EasyPermissions.PermissionCallbacks {
         })
 
     }
-    class Meal(val name:String, val protein:Float, val fat:Float, val carbs:Float, val calories:Float) {
-        constructor() : this("", 0F, 0F, 0F, 0F)
-    }
+
 
     /*
      * If we have any read results
@@ -418,4 +463,9 @@ EasyPermissions.PermissionCallbacks {
         flashLight()
     }
 
+
+
+}
+class Meal(val mealName:String, val protein:Float, val fat:Float, val carbs:Float, val calories:Float) {
+    constructor() : this("", 0F, 0F, 0F, 0F)
 }

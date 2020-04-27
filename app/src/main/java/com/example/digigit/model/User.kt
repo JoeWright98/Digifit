@@ -26,7 +26,7 @@ data class User (
 
     companion object {
 
-        const val FIELD_NAME = "name"
+        const val FIELD_NAME = "mealName"
         const val FIELD_WEIGHT =  "weight"
         const val FIELD_AGE = "age"
         const val FIELD_DAILY_PROTEIN_CONSUMED = "daily protein consumed"

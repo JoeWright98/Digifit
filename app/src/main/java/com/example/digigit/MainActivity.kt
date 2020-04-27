@@ -19,6 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlin.math.log
 
@@ -62,7 +63,10 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
     }
+
 
     fun checkLoginStatus(menu: Menu){
         var loggedInMenuItem = menu.findItem(R.id.action_login)
@@ -117,19 +121,12 @@ class MainActivity : AppCompatActivity() {
                Toast.makeText(applicationContext,"User logged out", Toast.LENGTH_LONG).show()
                return false
            }else->return super.onOptionsItemSelected(menuItem)
-       } // val id = menuItem.getItemId()
-
-        /*if (id == R.id.action_login){
-
-            val homeIntent = Intent(this@MainActivity, LoginScreenActivity::class.java)
-            startActivity(homeIntent)
-            return false
-
-
-        }
-        if (id == R.id.action_logout){
-            AuthUI.getInstance().signOut(this)
-        }*/
+       }
         return super.onOptionsItemSelected(menuItem)
     }
+}
+class Achievement(var achievementName:String, var points:Int, var completed:String) {
+    constructor() : this(
+        "", 0, "")
+
 }
